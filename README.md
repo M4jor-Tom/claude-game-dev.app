@@ -28,7 +28,8 @@ README.
 ## What it ships
 
 `claude-code git gh glab nodejs bun pnpm ripgrep fd jq yq-go uv python3 sqlite
-curl chromium imagemagick rtk graphify markitdown pandoc poppler-utils yt-dlp`
+curl imagemagick rtk graphify markitdown pandoc poppler-utils yt-dlp`, plus
+`chromium` on Linux — nixpkgs doesn't build it for Darwin.
 
 The same closure as `claude-power-dev.app`, from the same `package.nix`.
 `nixpkgs#claude-code` already sets `DISABLE_AUTOUPDATER=1`,
@@ -44,10 +45,15 @@ The engine toolchains this profile's skills drive — `godot`, `dotnet`, `love`,
 `butler`, `steamcmd` — are per-project, not per-profile. Put them in the game
 repo's own devShell.
 
+One thing this wrapper cannot fix: `claude-mem`'s hooks prepend `~/.nvm/…`,
+`~/.local/bin`, `/usr/local/bin` and `/opt/homebrew/bin` to PATH, so a stray
+`node` or `bun` in one of those outranks the Nix one.
+
 ## Plugins on a fresh clone
 
 The profile declares its marketplaces in `settings.json`
 (`extraKnownMarketplaces`) and its plugins in `enabledPlugins`. Claude Code
 clones a declared-but-missing marketplace and downloads its enabled plugins in
 the background *after* the session starts, so on a brand-new machine log in
-first and the plugins follow. `claude plugin marketplace update` forces it.
+first and the plugins follow. There is no flag that forces this sooner —
+starting the session is what triggers it.
